@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blacks Mines</title>
+  <script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@0.344.0/dist/umd/lucide.js"></script>
+</head>
+<body>
+  <div id="root" ></div>
+  <script>
+        // Bloquear a seleção de texto
+        document.addEventListener('selectstart', function (event) {
+            event.preventDefault();
+        });
+
+        // Bloquear clique com botão direito
+        document.addEventListener('contextmenu', function (event) {
+            event.preventDefault();
+        });
+
+        // Bloquear F12 e atalhos de desenvolvedor
+        document.addEventListener('keydown', function (event) {
+            if (event.key === "F12" || 
+                (event.ctrlKey && event.shiftKey && event.key === "I") || 
+                (event.ctrlKey && event.shiftKey && event.key === "J") || 
+                (event.ctrlKey && event.key === "U")) {
+                event.preventDefault();
+            }
+        });
+    const { createElement: h, useState, useCallback, useEffect } = React;
+    const { createIcons, icons } = lucide;
+    createIcons();
+
+    function App() {
+      const [balance, setBalance] = useState(100);
+      const [currentBet, setCurrentBet] = useState(10);
+      const [gameActive, setGameActive] = useState(false);
+      const [currentMultiplier, setCurrentMultiplier] = useState(1);
+      const [nextMultiplier, setNextMultiplier] = useState(0);
+      const [grid, setGrid] = useState(() => Array(5).fill(null).map(() =>
+        Array(5).fill(null).map(() => ({
+          isBomb: false,
+          isRevealed: false,
+          multiplier: (Math.floor(Math.random() * 3) + 1) * 0.1,
+        }))
+      ));
+      const [gameOver, setGameOver] = useState(false);
+      const [canCashOut, setCanCashOut] = useState(false);
+
+      // Create audio elements once when component mounts
+      const [bombSound] = useState(() => {
+        const audio = new Audio('https://assets.mixkit.co/active_storage/sfx/2220/2220-preview.mp3');
+        audio.volume = 0.9;
+        return audio;
+      });
+      const [diamondSound] = useState(() => {
+        const audio = new Audio('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3');
+        audio.volume = 0.05;
+        return audio;
+      });
+      const [startSound] = useState(() => {
+        const audio = new Audio('https://cdn.discordapp.com/attachments/1116737316996775936/1347915401228718184/start.MP3?ex=67cd8f8a&is=67cc3e0a&hm=40eff1013968a6f635010c7e5dbe361b78ac326964f67bc8d68078c804f03851&');
+        audio.volume = 0.6;
+        return audio;
+      });
+      const [cashoutSound] = useState(() => {
+        const audio = new Audio('https://assets.mixkit.co/active_storage/sfx/2002/2002-preview.mp3');
+        audio.volume = 0.8;
+        return audio;
+      });
+
+      // Preload sounds
+      useEffect(() => {
+        const preloadAudio = async () => {
+          try {
+            await Promise.all([
+              bombSound.load(),
+              diamondSound.load(),
+              startSound.load(),
+              cashoutSound.load()
+            ]);
+          } catch (error) {
+            console.warn('Audio preload failed:', error);
+          }
+        };
+        preloadAudio();
+      }, [bombSound, diamondSound, startSound, cashoutSound]);
+
+      const initializeGrid = useCallback(() => {
+        // Create 5x5 grid with no bombs initially
+        const newGrid = Array(5).fill(null).map(() =>
+          Array(5).fill(null).map(() => ({
+            isBomb: false,
+            isRevealed: false,
+            multiplier: (Math.floor(Math.random() * 3) + 1) * 0.1,
+          }))
+        );
+
+        // Place exactly 4 bombs in random positions
+        let bombsPlaced = 0;
+        const maxAttempts = 100; // Prevent infinite loop
+        let attempts = 0;
+
+        while (bombsPlaced < 4 && attempts < maxAttempts) {
+          const row = Math.floor(Math.random() * 5);
+          const col = Math.floor(Math.random() * 5);
+          
+          // Check if this position and adjacent positions already have bombs
+          let hasNearbyBomb = false;
+          for (let i = Math.max(0, row - 1); i <= Math.min(4, row + 1); i++) {
+            for (let j = Math.max(0, col - 1); j <= Math.min(4, col + 1); j++) {
+              if (newGrid[i][j].isBomb) {
+                hasNearbyBomb = true;
+                break;
+              }
+            }
+            if (hasNearbyBomb) break;
+          }
+
+          if (!newGrid[row][col].isBomb && !hasNearbyBomb) {
+            newGrid[row][col].isBomb = true;
+            bombsPlaced++;
+          }
+          attempts++;
+        }
+
+        // If we couldn't place all bombs with spacing, try without spacing constraints
+        if (bombsPlaced < 4) {
+          while (bombsPlaced < 4) {
+            const row = Math.floor(Math.random() * 5);
+            const col = Math.floor(Math.random() * 5);
+            if (!newGrid[row][col].isBomb) {
+              newGrid[row][col].isBomb = true;
+              bombsPlaced++;
+            }
+          }
+        }
+
+        const firstUnrevealedCell = newGrid.flat().find(cell => !cell.isRevealed && !cell.isBomb);
+        setNextMultiplier(firstUnrevealedCell ? currentMultiplier + firstUnrevealedCell.multiplier : currentMultiplier);
+
+        return newGrid;
+      }, [currentMultiplier]);
+
+      const startGame = async () => {
+        if (balance >= currentBet) {
+          try {
+            startSound.currentTime = 0;
+            await startSound.play();
+          } catch (error) {
+            console.warn('Error playing start sound:', error);
+          }
+          setBalance(prev => prev - currentBet);
+          setGrid(initializeGrid());
+          setGameActive(true);
+          setGameOver(false);
+          setCurrentMultiplier(1);
+          setCanCashOut(false);
+        }
+      };
+
+      const handleCellClick = async (rowIndex, colIndex) => {
+        if (!gameActive || gameOver || grid[rowIndex][colIndex].isRevealed) return;
+
+        const newGrid = [...grid.map(row => [...row])];
+        const cell = newGrid[rowIndex][colIndex];
+        cell.isRevealed = true;
+
+        if (cell.isBomb) {
+          try {
+            bombSound.currentTime = 0;
+            await bombSound.play();
+          } catch (error) {
+            console.warn('Error playing bomb sound:', error);
+          }
+          setGameOver(true);
+          setGameActive(false);
+          newGrid.forEach((row, i) =>
+            row.forEach((cell, j) => {
+              if (cell.isBomb) newGrid[i][j].isRevealed = true;
+            })
+          );
+        } else {
+          try {
+            diamondSound.currentTime = 0;
+            await diamondSound.play();
+          } catch (error) {
+            console.warn('Error playing diamond sound:', error);
+          }
+          setCurrentMultiplier(prev => prev + cell.multiplier);
+          
+          const nextUnrevealedCell = newGrid.flat().find(cell => !cell.isRevealed && !cell.isBomb);
+          setNextMultiplier(nextUnrevealedCell ? currentMultiplier + cell.multiplier + nextUnrevealedCell.multiplier : currentMultiplier + cell.multiplier);
+          setCanCashOut(true);
+        }
+
+        setGrid(newGrid);
+      };
+
+      const cashOut = async () => {
+        if (gameActive && !gameOver && canCashOut) {
+          try {
+            cashoutSound.currentTime = 0;
+            await cashoutSound.play();
+          } catch (error) {
+            console.warn('Error playing cashout sound:', error);
+          }
+          const winnings = currentBet * currentMultiplier;
+          setBalance(prev => prev + winnings);
+          setGameActive(false);
+        }
+      };
+
+      useEffect(() => {
+        if (!gameActive && !gameOver) {
+          setGrid(initializeGrid());
+        }
+      }, [gameActive, gameOver, initializeGrid]);
+
+      return h('div', {
+        className: 'min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 text-white p-4'
+      }, 
+        h('div', { className: 'max-w-sm mx-auto' },
+          h('div', { className: 'mb-4 text-center' },
+            h('h1', { 
+              className: 'text-3xl font-bold mb-2 text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-yellow-600'
+            }, 'Blacks Mines'),
+            h('div', { className: 'text-xl font-semibold' },
+              `Balance: R$ ${balance.toFixed(2)}`
+            ),
+            gameActive && h('div', { className: 'flex justify-center gap-4 text-lg mt-2' },
+              h('div', { className: 'text-green-400' },
+                `Current: ${currentMultiplier.toFixed(2)}x`
+              ),
+              h('div', { className: 'text-blue-400' },
+                `Next: ${nextMultiplier.toFixed(2)}x`
+              )
+            )
+          ),
+          h('div', { className: 'grid grid-cols-5 gap-1 mb-5 w-70 mx-auto' },
+            grid.map((row, rowIndex) =>
+              row.map((cell, colIndex) =>
+                h('button', {
+                  key: `${rowIndex}-${colIndex}`,
+                  onClick: () => handleCellClick(rowIndex, colIndex),
+                  disabled: !gameActive || gameOver || cell.isRevealed,
+                  className: `
+                    aspect-square rounded-md p-0.5 flex items-center justify-center
+                    transition-all duration-300
+                    ${
+                      cell.isRevealed
+                        ? cell.isBomb
+                          ? 'bg-red-600'
+                          : 'bg-green-500'
+                        : 'bg-gray-700 hover:bg-gray-600'
+                    }
+                    ${!gameActive || gameOver ? 'opacity-75' : 'opacity-100'}
+                  `
+                },
+                  cell.isRevealed
+                    ? cell.isBomb
+                      ? h('i', { 'data-lucide': 'bomb', className: 'w-3 h-3' })
+                      : h('i', { 'data-lucide': 'diamond', className: 'w-3 h-3' })
+                    : h('div', { className: 'w-3 h-3 bg-gray-600 rounded' })
+                )
+              )
+            )
+          ),
+          h('div', { className: 'flex flex-col gap-2 items-center' },
+            h('div', { className: 'flex items-center gap-2 bg-gray-700 p-2 rounded-lg w-full' },
+              h('label', { className: 'text-sm' }, 'Bet Amount:'),
+              h('input', {
+                type: 'number',
+                value: currentBet,
+                onChange: (e) => setCurrentBet(Math.max(1, Number(e.target.value))),
+                disabled: gameActive,
+                className: 'w-24 px-2 py-1 bg-gray-800 rounded text-center'
+              })
+            ),
+            !gameActive
+              ? h('button', {
+                  onClick: startGame,
+                  disabled: balance < currentBet,
+                  className: 'flex items-center gap-2 px-6 py-2 bg-green-600 hover:bg-green-700 rounded-lg font-semibold disabled:opacity-50 w-full justify-center'
+                },
+                  h('i', { 'data-lucide': 'play', className: 'w-4 h-4' }),
+                  'Start Game'
+                )
+              : h('button', {
+                  onClick: cashOut,
+                  disabled: !canCashOut,
+                  className: `
+                    flex items-center gap-2 px-6 py-2 rounded-lg font-semibold w-full justify-center
+                    ${canCashOut 
+                      ? 'bg-yellow-600 hover:bg-yellow-700' 
+                      : 'bg-gray-600 cursor-not-allowed'}
+                  `
+                },
+                  h('i', { 'data-lucide': 'hand-coins', className: 'w-4 h-4' }),
+                  'Cash Out'
+                )
+          ),
+          gameOver && h('div', {
+            className: 'text-center mt-4 text-red-500 text-lg font-bold'
+          }, 'Game Over! You hit a bomb!')
+        )
+      );
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(h(React.StrictMode, null, h(App)));
+  </script>
+</body>
+</html>
