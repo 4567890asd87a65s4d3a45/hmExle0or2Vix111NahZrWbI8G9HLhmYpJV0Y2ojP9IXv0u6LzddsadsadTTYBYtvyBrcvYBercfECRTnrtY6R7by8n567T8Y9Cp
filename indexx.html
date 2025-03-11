@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Black Mines</title>
+  <script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@0.344.0/dist/umd/lucide.js"></script>
+  <link rel="icon" type="image/x-icon" href="https://media.discordapp.net/attachments/1116737316996775936/1348368777393209394/941736595-robo-do-mines-PEBZ.png?ex=67cf35c8&is=67cde448&hm=5d018f1ea90c233b5b62a0a95d71e002f12deb8650480313bcd2a4fea9f204cd&=&format=webp&quality=lossless&width=585&height=585">
+  <link rel="shortcut icon" type="image/x-icon" href="https://media.discordapp.net/attachments/1116737316996775936/1348368777393209394/941736595-robo-do-mines-PEBZ.png?ex=67cf35c8&is=67cde448&hm=5d018f1ea90c233b5b62a0a95d71e002f12deb8650480313bcd2a4fea9f204cd&=&format=webp&quality=lossless&width=585&height=585">
+</head>
+<body>
+  <div id="app" class="min-h-screen bg-gradient-to-b from-red-800 to-red-950 flex items-center justify-center p-4">
+    <div class="bg-red-900 p-8 rounded-2xl shadow-2xl border-4 border-yellow-500 max-w-md w-full">
+      <div class="text-center mb-6">
+        <h1 class="text-3xl font-bold text-yellow-500 mb-2">Fortune Slots</h1>
+        <div class="flex items-center justify-center gap-2 text-yellow-400">
+          <i data-lucide="coins"></i>
+          <span class="text-xl">R$ <span id="balance">100</span></span>
+        </div>
+      </div>
+
+      <div id="special-event" class="text-yellow-300 text-center font-bold text-xl mb-4 animate-pulse hidden"></div>
+
+      <div class="relative">
+        <div id="grid" class="grid grid-rows-3 grid-cols-3 gap-2 bg-red-800 p-4 rounded-lg mb-6"></div>
+        
+        <div id="win-message" class="absolute inset-0 flex items-center justify-center hidden">
+          <div class="bg-yellow-500 bg-opacity-90 px-6 py-3 rounded-full text-white font-bold text-2xl animate-bounce shadow-lg"></div>
+        </div>
+      </div>
+
+      <div class="flex flex-col gap-4 items-center">
+        <div class="flex items-center gap-4">
+          <button 
+            class="px-3 py-1 bg-yellow-600 hover:bg-yellow-500 text-white rounded-full transition-colors"
+            onclick="decreaseBet()"
+          >
+            -
+          </button>
+          <span class="text-yellow-400 font-medium">Bet: R$ <span id="bet">1</span></span>
+          <button 
+            class="px-3 py-1 bg-yellow-600 hover:bg-yellow-500 text-white rounded-full transition-colors"
+            onclick="increaseBet()"
+          >
+            +
+          </button>
+        </div>
+
+        <button
+          id="spin-button"
+          class="flex items-center gap-2 px-6 py-3 rounded-full text-white font-bold transition-colors bg-yellow-600 hover:bg-yellow-500"
+          onclick="spin()"
+        >
+          <i data-lucide="refresh-cw"></i>
+          Spin
+        </button>
+      </div>
+
+      <div class="mt-4 text-yellow-200 text-sm">
+        <p>🎎 🏮 🍜 🧧 🧨 = 0.5x | 💰 👑 = 5x</p>
+        <p>🦁 = Wild (matches symbol value)</p>
+        <p>Horizontal and diagonal sequences of 3 count!</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const COMMON_SYMBOLS = ['🎎', '🏮', '🍜', '🧧', '🧨'];
+    const RARE_SYMBOLS = ['💰', '👑'];
+    const WILD_SYMBOL = '🦁';
+    const ALL_SYMBOLS = [...COMMON_SYMBOLS, ...RARE_SYMBOLS];
+    const ROWS = 3;
+    const COLS = 3;
+
+    let balance = 100;
+    let bet = 1;
+    let grid = Array(ROWS).fill(null).map(() =>
+      Array(COLS).fill(null).map(() => ALL_SYMBOLS[Math.floor(Math.random() * ALL_SYMBOLS.length)])
+    );
+    let spinning = false;
+
+    function updateUI() {
+      document.getElementById('balance').textContent = balance.toFixed(2);
+      document.getElementById('bet').textContent = bet;
+      
+      const gridElement = document.getElementById('grid');
+      gridElement.innerHTML = '';
+      
+      grid.forEach((row, i) => {
+        row.forEach((symbol, j) => {
+          const cell = document.createElement('div');
+          cell.className = `aspect-square bg-yellow-100 rounded-lg flex items-center justify-center text-4xl ${spinning ? 'animate-bounce' : ''}`;
+          cell.textContent = symbol;
+          gridElement.appendChild(cell);
+        });
+      });
+
+      const spinButton = document.getElementById('spin-button');
+      if (spinning || balance < bet) {
+        spinButton.classList.remove('bg-yellow-600', 'hover:bg-yellow-500');
+        spinButton.classList.add('bg-gray-600', 'cursor-not-allowed');
+        spinButton.disabled = true;
+      } else {
+        spinButton.classList.remove('bg-gray-600', 'cursor-not-allowed');
+        spinButton.classList.add('bg-yellow-600', 'hover:bg-yellow-500');
+        spinButton.disabled = false;
+      }
+    }
+
+    function getRandomSymbol() {
+      const rand = Math.random();
+      if (rand < 0.02) return WILD_SYMBOL;
+      if (rand < 0.15) return RARE_SYMBOLS[Math.floor(Math.random() * RARE_SYMBOLS.length)];
+      return COMMON_SYMBOLS[Math.floor(Math.random() * COMMON_SYMBOLS.length)];
+    }
+
+    function checkLine(line) {
+      const wildCount = line.filter(s => s === WILD_SYMBOL).length;
+      const nonWildSymbols = line.filter(s => s !== WILD_SYMBOL);
+      
+      if (nonWildSymbols.length === 0) return { valid: true, symbol: WILD_SYMBOL };
+      
+      const mainSymbol = nonWildSymbols[0];
+      const isValid = nonWildSymbols.every(s => s === mainSymbol);
+      
+      const isCommon = COMMON_SYMBOLS.includes(mainSymbol);
+      const hasOnlyCommon = nonWildSymbols.every(s => COMMON_SYMBOLS.includes(s));
+      const hasOnlyRare = nonWildSymbols.every(s => RARE_SYMBOLS.includes(s));
+      
+      if (!hasOnlyCommon && !hasOnlyRare) return { valid: false };
+      
+      return {
+        valid: isValid && line.length === 3,
+        symbol: mainSymbol,
+        wildBonus: wildCount > 0,
+        isCommon: isCommon
+      };
+    }
+
+    function getMultiplier(symbol, hasWild) {
+      const baseMultiplier = COMMON_SYMBOLS.includes(symbol) ? 0.1666666666666667 : 1.666666666666667;
+      return baseMultiplier * 3;
+    }
+
+    function checkAllSameSymbol() {
+      const firstSymbol = grid[0][0];
+      return grid.every(row => row.every(symbol => symbol === firstSymbol));
+    }
+
+    function showWin(amount) {
+      const winMessage = document.getElementById('win-message');
+      winMessage.querySelector('div').textContent = `WIN! R$ ${amount.toFixed(2)}`;
+      winMessage.classList.remove('hidden');
+      setTimeout(() => winMessage.classList.add('hidden'), 2000);
+    }
+
+    function showSpecialEvent(message) {
+      const specialEvent = document.getElementById('special-event');
+      specialEvent.textContent = message;
+      specialEvent.classList.remove('hidden');
+      setTimeout(() => specialEvent.classList.add('hidden'), 2000);
+    }
+
+    function checkWin() {
+      let winAmount = 0;
+
+      if (Math.random() < 0.1 && checkAllSameSymbol()) {
+        showSpecialEvent("SUPER JACKPOT! All symbols transformed to Wild!");
+        grid = grid.map(row => row.map(() => WILD_SYMBOL));
+        winAmount = bet * 10;
+      } else {
+        const diagonal1 = [grid[0][0], grid[1][1], grid[2][2]];
+        const diagonal2 = [grid[0][2], grid[1][1], grid[2][0]];
+        
+        const horizontalLines = grid.map(row => [...row]);
+        
+        [...horizontalLines, diagonal1, diagonal2].forEach(line => {
+          const result = checkLine(line);
+          if (result.valid) {
+            winAmount += bet * getMultiplier(result.symbol, result.wildBonus);
+          }
+        });
+      }
+
+      if (winAmount > 0) {
+        balance += winAmount;
+        showWin(winAmount);
+      }
+      
+      updateUI();
+    }
+
+    function spin() {
+      if (balance < bet || spinning) return;
+
+      spinning = true;
+      balance -= bet;
+      updateUI();
+
+      let spins = 0;
+      const maxSpins = 10;
+      const interval = setInterval(() => {
+        grid = Array(ROWS).fill(null).map(() =>
+          Array(COLS).fill(null).map(() => getRandomSymbol())
+        );
+        updateUI();
+        spins++;
+        
+        if (spins >= maxSpins) {
+          clearInterval(interval);
+          spinning = false;
+          checkWin();
+        }
+      }, 100);
+    }
+
+    function increaseBet() {
+      if (!spinning && bet < 100) {
+        bet = Math.min(100, bet + 1);
+        updateUI();
+      }
+    }
+
+    function decreaseBet() {
+      if (!spinning && bet > 1) {
+        bet = Math.max(1, bet - 1);
+        updateUI();
+      }
+    }
+
+    // Initialize Lucide icons
+    lucide.createIcons();
+
+    // Initial UI update
+    updateUI();
+  </script>
+</body>
+</html>
