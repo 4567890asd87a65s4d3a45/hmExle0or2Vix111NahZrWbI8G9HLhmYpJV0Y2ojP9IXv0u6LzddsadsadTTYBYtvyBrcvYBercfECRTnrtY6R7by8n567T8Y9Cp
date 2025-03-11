@@ -1,241 +1,330 @@
-<!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Black Mines</title>
-  <script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js"></script>
-  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://unpkg.com/lucide@0.344.0/dist/umd/lucide.js"></script>
-  <link rel="icon" type="image/x-icon" href="https://media.discordapp.net/attachments/1116737316996775936/1348368777393209394/941736595-robo-do-mines-PEBZ.png?ex=67cf35c8&is=67cde448&hm=5d018f1ea90c233b5b62a0a95d71e002f12deb8650480313bcd2a4fea9f204cd&=&format=webp&quality=lossless&width=585&height=585">
-  <link rel="shortcut icon" type="image/x-icon" href="https://media.discordapp.net/attachments/1272179022708605002/1349070643945144381/tiger-face_1f42f.png?ex=67d1c372&is=67d071f2&hm=46b1df1d1236292ddc231222a686bbf4259f587c6c403ce0eeca64c3ccb4da48&=&format=webp&quality=lossless">
-</head>
-<body>
-  <div id="app" class="min-h-screen bg-gradient-to-b from-red-800 to-red-950 flex items-center justify-center p-4">
-    <div class="bg-red-900 p-8 rounded-2xl shadow-2xl border-4 border-yellow-500 max-w-md w-full">
-      <div class="text-center mb-6">
-        <h1 class="text-3xl font-bold text-yellow-500 mb-2">Fortune Slots</h1>
-        <div class="flex items-center justify-center gap-2 text-yellow-400">
-          <i data-lucide="coins"></i>
-          <span class="text-xl">R$ <span id="balance">100</span></span>
-        </div>
+   <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Black Mines</title>
+      <script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js"></script>
+      <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+      <script src="https://cdn.tailwindcss.com"></script>
+      <script src="https://unpkg.com/lucide@0.344.0/dist/umd/lucide.js"></script>
+      <link rel="icon" type="image/x-icon" href="https://media.discordapp.net/attachments/1116737316996775936/1348368777393209394/941736595-robo-do-mines-PEBZ.png?ex=67cf35c8&amp;is=67cde448&amp;hm=5d018f1ea90c233b5b62a0a95d71e002f12deb8650480313bcd2a4fea9f204cd&amp;=&amp;format=webp&amp;quality=lossless&amp;width=585&amp;height=585">
+      <link rel="shortcut icon" type="image/x-icon" href="https://media.discordapp.net/attachments/1272179022708605002/1349070643945144381/tiger-face_1f42f.png?ex=67d1c372&amp;is=67d071f2&amp;hm=46b1df1d1236292ddc231222a686bbf4259f587c6c403ce0eeca64c3ccb4da48&amp;=&amp;format=webp&amp;quality=lossless">
+      <style>*, ::before, ::after{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/* ! tailwindcss v3.4.16 | MIT License | https://tailwindcss.com */*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}::after,::before{--tw-content:''}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.absolute{position:absolute}.relative{position:relative}.inset-0{inset:0px}.mb-2{margin-bottom:0.5rem}.mb-4{margin-bottom:1rem}.mb-6{margin-bottom:1.5rem}.mt-4{margin-top:1rem}.flex{display:flex}.grid{display:grid}.hidden{display:none}.aspect-square{aspect-ratio:1 / 1}.min-h-screen{min-height:100vh}.w-full{width:100%}.max-w-md{max-width:28rem}@keyframes bounce{0%, 100%{transform:translateY(-25%);animation-timing-function:cubic-bezier(0.8,0,1,1)}50%{transform:none;animation-timing-function:cubic-bezier(0,0,0.2,1)}}.animate-bounce{animation:bounce 1s infinite}@keyframes pulse{50%{opacity:.5}}.animate-pulse{animation:pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite}.cursor-not-allowed{cursor:not-allowed}.grid-cols-3{grid-template-columns:repeat(3, minmax(0, 1fr))}.grid-rows-3{grid-template-rows:repeat(3, minmax(0, 1fr))}.flex-col{flex-direction:column}.items-center{align-items:center}.justify-center{justify-content:center}.gap-2{gap:0.5rem}.gap-4{gap:1rem}.rounded-2xl{border-radius:1rem}.rounded-full{border-radius:9999px}.rounded-lg{border-radius:0.5rem}.border-4{border-width:4px}.border-yellow-500{--tw-border-opacity:1;border-color:rgb(234 179 8 / var(--tw-border-opacity, 1))}.bg-red-800{--tw-bg-opacity:1;background-color:rgb(153 27 27 / var(--tw-bg-opacity, 1))}.bg-red-900{--tw-bg-opacity:1;background-color:rgb(127 29 29 / var(--tw-bg-opacity, 1))}.bg-yellow-500{--tw-bg-opacity:1;background-color:rgb(234 179 8 / var(--tw-bg-opacity, 1))}.bg-yellow-600{--tw-bg-opacity:1;background-color:rgb(202 138 4 / var(--tw-bg-opacity, 1))}.bg-yellow-100{--tw-bg-opacity:1;background-color:rgb(254 249 195 / var(--tw-bg-opacity, 1))}.bg-gray-600{--tw-bg-opacity:1;background-color:rgb(75 85 99 / var(--tw-bg-opacity, 1))}.bg-opacity-90{--tw-bg-opacity:0.9}.bg-gradient-to-b{background-image:linear-gradient(to bottom, var(--tw-gradient-stops))}.from-red-800{--tw-gradient-from:#991b1b var(--tw-gradient-from-position);--tw-gradient-to:rgb(153 27 27 / 0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), var(--tw-gradient-to)}.to-red-950{--tw-gradient-to:#450a0a var(--tw-gradient-to-position)}.p-4{padding:1rem}.p-8{padding:2rem}.px-3{padding-left:0.75rem;padding-right:0.75rem}.px-6{padding-left:1.5rem;padding-right:1.5rem}.py-1{padding-top:0.25rem;padding-bottom:0.25rem}.py-3{padding-top:0.75rem;padding-bottom:0.75rem}.text-center{text-align:center}.text-2xl{font-size:1.5rem;line-height:2rem}.text-3xl{font-size:1.875rem;line-height:2.25rem}.text-sm{font-size:0.875rem;line-height:1.25rem}.text-xl{font-size:1.25rem;line-height:1.75rem}.text-4xl{font-size:2.25rem;line-height:2.5rem}.font-bold{font-weight:700}.font-medium{font-weight:500}.text-white{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}.text-yellow-200{--tw-text-opacity:1;color:rgb(254 240 138 / var(--tw-text-opacity, 1))}.text-yellow-300{--tw-text-opacity:1;color:rgb(253 224 71 / var(--tw-text-opacity, 1))}.text-yellow-400{--tw-text-opacity:1;color:rgb(250 204 21 / var(--tw-text-opacity, 1))}.text-yellow-500{--tw-text-opacity:1;color:rgb(234 179 8 / var(--tw-text-opacity, 1))}.shadow-2xl{--tw-shadow:0 25px 50px -12px rgb(0 0 0 / 0.25);--tw-shadow-colored:0 25px 50px -12px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-lg{--tw-shadow:0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);--tw-shadow-colored:0 10px 15px -3px var(--tw-shadow-color), 0 4px 6px -4px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.transition-colors{transition-property:color, background-color, border-color, fill, stroke, -webkit-text-decoration-color;transition-property:color, background-color, border-color, text-decoration-color, fill, stroke;transition-property:color, background-color, border-color, text-decoration-color, fill, stroke, -webkit-text-decoration-color;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.hover\:bg-yellow-500:hover{--tw-bg-opacity:1;background-color:rgb(234 179 8 / var(--tw-bg-opacity, 1))}</style>
+      <style type="text/css">.resize-observer[data-v-8859cc6c]{position:absolute;top:0;left:0;z-index:-1;width:100%;height:100%;border:none;background-color:transparent;pointer-events:none;display:block;overflow:hidden;opacity:0}.resize-observer[data-v-8859cc6c] object{display:block;position:absolute;top:0;left:0;height:100%;width:100%;overflow:hidden;pointer-events:none;z-index:-1}</style>
+      <style type="text/css">x-vue-echarts{display:flex;flex-direction:column;width:100%;height:100%;min-width:0}
+         .vue-echarts-inner{flex-grow:1;min-width:0;width:auto!important;height:auto!important}
+      </style>
+   </head>
+   <body ap-style="">
+      <div id="app" class="min-h-screen bg-gradient-to-b from-red-800 to-red-950 flex items-center justify-center p-4">
+         <div class="bg-red-900 p-8 rounded-2xl shadow-2xl border-4 border-yellow-500 w-85% relative">
+            <div class="text-center mb-6">
+               <h1 class="text-3xl font-bold text-yellow-500 mb-2">Fortune Slots</h1>
+               <div class="flex items-center justify-center gap-2 text-yellow-400">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="coins" class="lucide lucide-coins">
+                     <circle cx="8" cy="8" r="6"></circle>
+                     <path d="M18.09 10.37A6 6 0 1 1 10.34 18"></path>
+                     <path d="M7 6h1v4"></path>
+                     <path d="m16.71 13.88.7.71-2.82 2.82"></path>
+                  </svg>
+                  <span class="text-xl">R$ <span id="balance">95.00</span></span>
+               </div>
+            </div>
+            <div id="special-event" class="text-yellow-300 text-center font-bold text-xl mb-4 animate-pulse hidden"></div>
+            <div class="relative">
+               <div id="grid" class="grid grid-rows-3 grid-cols-3 gap-2 bg-red-800 p-4 rounded-lg mb-6">
+                  <div class="aspect-square bg-yellow-100 rounded-lg flex items-center justify-center text-4xl ">🍜</div>
+                  <div class="aspect-square bg-yellow-100 rounded-lg flex items-center justify-center text-4xl ">🎎</div>
+                  <div class="aspect-square bg-yellow-100 rounded-lg flex items-center justify-center text-4xl ">💰</div>
+                  <div class="aspect-square bg-yellow-100 rounded-lg flex items-center justify-center text-4xl ">💰</div>
+                  <div class="aspect-square bg-yellow-100 rounded-lg flex items-center justify-center text-4xl ">🎎</div>
+                  <div class="aspect-square bg-yellow-100 rounded-lg flex items-center justify-center text-4xl ">🎎</div>
+                  <div class="aspect-square bg-yellow-100 rounded-lg flex items-center justify-center text-4xl ">🧨</div>
+                  <div class="aspect-square bg-yellow-100 rounded-lg flex items-center justify-center text-4xl ">🧧</div>
+                  <div class="aspect-square bg-yellow-100 rounded-lg flex items-center justify-center text-4xl ">👑</div>
+               </div>
+               <div id="win-message" class="absolute inset-0 flex items-center justify-center hidden">
+                  <div class="bg-yellow-500 bg-opacity-90 px-6 py-3 rounded-full text-white font-bold text-2xl animate-bounce shadow-lg"></div>
+               </div>
+            </div>
+            <div class="flex flex-col gap-4 items-center">
+               <div class="flex items-center gap-4">
+                  <button class="px-3 py-1 bg-yellow-600 hover:bg-yellow-500 text-white rounded-full transition-colors" onclick="decreaseBet()">
+                  -
+                  </button>
+                  <span class="text-yellow-400 font-medium">Bet: R$ <span id="bet">1</span></span>
+                  <button class="px-3 py-1 bg-yellow-600 hover:bg-yellow-500 text-white rounded-full transition-colors" onclick="increaseBet()">
+                  +
+                  </button>
+               </div>
+               <button id="spin-button" class="flex items-center gap-2 px-6 py-3 rounded-full text-white font-bold transition-colors bg-yellow-600 hover:bg-yellow-500" onclick="spin()">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="refresh-cw" class="lucide lucide-refresh-cw">
+                     <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"></path>
+                     <path d="M21 3v5h-5"></path>
+                     <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"></path>
+                     <path d="M8 16H3v5"></path>
+                  </svg>
+                  Spin
+               </button>
+            </div>
+            <div class="mt-4 text-yellow-200 text-sm">
+               <p>🎎 🏮 🍜 🧧 🧨 = 0.5x | 💰 👑 = 5x</p>
+               <p>🦁 = Wild (matches symbol value)</p>
+               <p>Horizontal and diagonal sequences of 3 count!</p>
+            </div>
+         </div>
       </div>
-
-      <div id="special-event" class="text-yellow-300 text-center font-bold text-xl mb-4 animate-pulse hidden"></div>
-
-      <div class="relative">
-        <div id="grid" class="grid grid-rows-3 grid-cols-3 gap-2 bg-red-800 p-4 rounded-lg mb-6"></div>
-        
-        <div id="win-message" class="absolute inset-0 flex items-center justify-center hidden">
-          <div class="bg-yellow-500 bg-opacity-90 px-6 py-3 rounded-full text-white font-bold text-2xl animate-bounce shadow-lg"></div>
-        </div>
+      <script>
+         const COMMON_SYMBOLS = ['🎎', '🏮', '🍜', '🧧', '🧨'];
+         const RARE_SYMBOLS = ['💰', '👑'];
+         const WILD_SYMBOL = '🦁';
+         const ALL_SYMBOLS = [...COMMON_SYMBOLS, ...RARE_SYMBOLS];
+         const ROWS = 3;
+         const COLS = 3;
+         
+         let balance = 100;
+         let bet = 1;
+         let grid = Array(ROWS).fill(null).map(() =>
+           Array(COLS).fill(null).map(() => ALL_SYMBOLS[Math.floor(Math.random() * ALL_SYMBOLS.length)])
+         );
+         let spinning = false;
+         
+         function updateUI() {
+           document.getElementById('balance').textContent = balance.toFixed(2);
+           document.getElementById('bet').textContent = bet;
+           
+           const gridElement = document.getElementById('grid');
+           gridElement.innerHTML = '';
+           
+           grid.forEach((row, i) => {
+             row.forEach((symbol, j) => {
+               const cell = document.createElement('div');
+               cell.className = `aspect-square bg-yellow-100 rounded-lg flex items-center justify-center text-4xl ${spinning ? 'animate-bounce' : ''}`;
+               cell.textContent = symbol;
+               gridElement.appendChild(cell);
+             });
+           });
+         
+           const spinButton = document.getElementById('spin-button');
+           if (spinning || balance < bet) {
+             spinButton.classList.remove('bg-yellow-600', 'hover:bg-yellow-500');
+             spinButton.classList.add('bg-gray-600', 'cursor-not-allowed');
+             spinButton.disabled = true;
+           } else {
+             spinButton.classList.remove('bg-gray-600', 'cursor-not-allowed');
+             spinButton.classList.add('bg-yellow-600', 'hover:bg-yellow-500');
+             spinButton.disabled = false;
+           }
+         }
+         
+         function getRandomSymbol() {
+           const rand = Math.random();
+           if (rand < 0.02) return WILD_SYMBOL;
+           if (rand < 0.15) return RARE_SYMBOLS[Math.floor(Math.random() * RARE_SYMBOLS.length)];
+           return COMMON_SYMBOLS[Math.floor(Math.random() * COMMON_SYMBOLS.length)];
+         }
+         
+         function checkLine(line) {
+           const wildCount = line.filter(s => s === WILD_SYMBOL).length;
+           const nonWildSymbols = line.filter(s => s !== WILD_SYMBOL);
+           
+           if (nonWildSymbols.length === 0) return { valid: true, symbol: WILD_SYMBOL };
+           
+           const mainSymbol = nonWildSymbols[0];
+           const isValid = nonWildSymbols.every(s => s === mainSymbol);
+           
+           const isCommon = COMMON_SYMBOLS.includes(mainSymbol);
+           const hasOnlyCommon = nonWildSymbols.every(s => COMMON_SYMBOLS.includes(s));
+           const hasOnlyRare = nonWildSymbols.every(s => RARE_SYMBOLS.includes(s));
+           
+           if (!hasOnlyCommon && !hasOnlyRare) return { valid: false };
+           
+           return {
+             valid: isValid && line.length === 3,
+             symbol: mainSymbol,
+             wildBonus: wildCount > 0,
+             isCommon: isCommon
+           };
+         }
+         
+         function getMultiplier(symbol, hasWild) {
+           const baseMultiplier = COMMON_SYMBOLS.includes(symbol) ? 0.1666666666666667 : 1.666666666666667;
+           return baseMultiplier * 3;
+         }
+         
+         function checkAllSameSymbol() {
+           const firstSymbol = grid[0][0];
+           return grid.every(row => row.every(symbol => symbol === firstSymbol));
+         }
+         
+         function showWin(amount) {
+           const winMessage = document.getElementById('win-message');
+           winMessage.querySelector('div').textContent = `WIN! R$ ${amount.toFixed(2)}`;
+           winMessage.classList.remove('hidden');
+           setTimeout(() => winMessage.classList.add('hidden'), 2000);
+         }
+         
+         function showSpecialEvent(message) {
+           const specialEvent = document.getElementById('special-event');
+           specialEvent.textContent = message;
+           specialEvent.classList.remove('hidden');
+           setTimeout(() => specialEvent.classList.add('hidden'), 2000);
+         }
+         
+         function checkWin() {
+           let winAmount = 0;
+         
+           if (Math.random() < 0.1 && checkAllSameSymbol()) {
+             showSpecialEvent("SUPER JACKPOT! All symbols transformed to Wild!");
+             grid = grid.map(row => row.map(() => WILD_SYMBOL));
+             winAmount = bet * 10;
+           } else {
+             const diagonal1 = [grid[0][0], grid[1][1], grid[2][2]];
+             const diagonal2 = [grid[0][2], grid[1][1], grid[2][0]];
+             
+             const horizontalLines = grid.map(row => [...row]);
+             
+             [...horizontalLines, diagonal1, diagonal2].forEach(line => {
+               const result = checkLine(line);
+               if (result.valid) {
+                 winAmount += bet * getMultiplier(result.symbol, result.wildBonus);
+               }
+             });
+           }
+         
+           if (winAmount > 0) {
+             balance += winAmount;
+             showWin(winAmount);
+           }
+           
+           updateUI();
+         }
+         
+         function spin() {
+           if (balance < bet || spinning) return;
+         
+           spinning = true;
+           balance -= bet;
+           updateUI();
+         
+           let spins = 0;
+           const maxSpins = 10;
+           const interval = setInterval(() => {
+             grid = Array(ROWS).fill(null).map(() =>
+               Array(COLS).fill(null).map(() => getRandomSymbol())
+             );
+             updateUI();
+             spins++;
+             
+             if (spins >= maxSpins) {
+               clearInterval(interval);
+               spinning = false;
+               checkWin();
+             }
+           }, 100);
+         }
+         
+         function increaseBet() {
+           if (!spinning && bet < 100) {
+             bet = Math.min(100, bet + 1);
+             updateUI();
+           }
+         }
+         
+         function decreaseBet() {
+           if (!spinning && bet > 1) {
+             bet = Math.max(1, bet - 1);
+             updateUI();
+           }
+         }
+         
+         // Initialize Lucide icons
+         lucide.createIcons();
+         
+         // Initial UI update
+         updateUI();
+      </script>
+      <div class="ap-ext ap-ext-shopee">
+         <div translate="no" class="ap-base ap-base--ltr ap-theme--dark">
+            <div>
+               <div class="ap-toolbar ap-toolbar--left ap-toolbar--expand">
+                  <div class="ap-toolbar-tab ap-toolbar-tab-expandToggle">
+                     <!---->
+                     <div role="tab" class="ap-toolbar-tab-tab">
+                        <div class="ap-toolbar-tab-tab__inner"><i class="ap-toolbar-expand-toggle"></i></div>
+                     </div>
+                  </div>
+                  <div class="ap-toolbar__inner">
+                     <!----><!---->
+                     <div class="ap-toolbar-tab ap-toolbar-tab-Bulletin" data-read="false">
+                        <!---->
+                        <div role="tab" class="ap-toolbar-tab-tab">
+                           <div class="ap-toolbar-tab-tab__inner">
+                              <div>
+                                 <div class="ap-notification-cover" data-action="listDetails"><img src="https://www.aliprice.com/static/img/qipao-theme/tabbar-icon-message-dark.png" width="60" height="60" style="display:none" data-theme="dark" data-read="true"><img src="https://www.aliprice.com/static/img/qipao-theme/tabbar-icon-message-dark.png" width="60" height="60" style="display: block;" data-theme="dark" data-read="false"><img src="https://www.aliprice.com/static/img/qipao-theme/tabbar-icon-message-light.png" width="60" height="60" style="display:none" data-theme="light" data-read="true"><img src="https://www.aliprice.com/static/img/qipao-theme/tabbar-icon-message-light.png" width="60" height="60" style="display:none" data-theme="light" data-read="false"></div>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+            <!---->
+            <div>
+               <!---->
+               <div class="ap-sbi">
+                  <div class="ap-sbi-btn-search-wrapper" style="cursor: pointer; display: none;">
+                     <div class="ap-sbi-btn-search"><i class="ap-sbi-btn-search__icon ap-icon-search"></i><span class="ap-sbi-btn-search__txt">AliPrice</span></div>
+                     <div class="ap-sbi-options">
+                        <div class="ap-sbi-options__label"><i class="ap-sbi-options__icon ap-icon-vertical-ellipsis"></i></div>
+                        <!---->
+                     </div>
+                  </div>
+                  <!---->
+                  <div class="ap-sbi-aside">
+                     <!---->
+                     <div class="ap-sbi-aside-btn-minimize" style="display: none;"><img src="" class="ap-sbi-img-thumb"><i class="ap-sbi-aside-btn-minimize__icon ap-icon-chevron-right"></i></div>
+                     <!---->
+                  </div>
+                  <!---->
+               </div>
+               <div class="ap-sbi-compare-bar-wrapper">
+                  <div class="ap-sbi-compare-bar__inner">
+                     <div class="ap-sbi-compare-bar-compared-list-wrapper">
+                        <div class="ap-sbi-compare-bar-next ap-sbi-compare-bar-next__prev ap-icon-chevron-left ap-is-disabled"></div>
+                        <div class="ap-sbi-compare-bar-compared-list-container">
+                           <div class="ap-sbi-compare-bar-compared-list" style="width: 1000%; height: 100%; transform: translate3d(0px, 0px, 0px);"></div>
+                           <!---->
+                        </div>
+                        <div class="ap-sbi-compare-bar-next ap-sbi-compare-bar-next__next ap-icon-chevron-right ap-is-disabled"></div>
+                     </div>
+                     <div class="ap-sbi-compare-bar-ctrls ap-sbi-compare-bar-ctrls__compare ap-is-disabled"> Comparar (0/20) </div>
+                     <div class="ap-sbi-compare-bar-ctrls ap-sbi-compare-bar-ctrls__clear ap-is-disabled"> Limpar tudo </div>
+                     <div title="Fechar" class="ap-sbi-compare-bar-ctrls ap-sbi-compare-bar-ctrls__close ap-icon-close"></div>
+                  </div>
+               </div>
+               <!---->
+            </div>
+            <!----><!---->
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <!---->
+            <div></div>
+            <div>
+               <!---->
+            </div>
+            <div></div>
+            <div></div>
+            <!----><!----><!---->
+            <div></div>
+            <div></div>
+            <!----><!---->
+            <style id="J_1741714983990" type="text/css">.ap-ext-shopee .ap-toolbar-tab-Bulletin .ap-toolbar-tab-tab,.ap-ext-shopee .ap-toolbar-tab-Bulletin .ap-toolbar-tab-tab__inner{padding:0!important;background:none!important}.ap-ext-shopee .ap-bulletin.ap-bulletin-toggle{display:none}.ap-ext-shopee .ap-toolbar .ap-bulletin.ap-bulletin-toggle{display:block}.ap-ext-shopee .ap-theme--dark .ap-notifications__list{display:flex;display:-ms-flexbox;flex-direction:column;-ms-flex-direction:column;flex-direction:column}.ap-ext-shopee .ap-theme--dark .ap-notifications__item{margin-bottom:10px}.ap-ext-shopee .ap-theme--dark .ap-notifications__item-link{background-color:#3e3e3e;border-radius:6px;padding:4px 0;border:solid 1px #3e3e3e;display:flex;display:-ms-flexbox;align-items:center;-ms-flex-align:center}.ap-ext-shopee .ap-theme--dark .ap-notifications__item-link:hover{border-color:#fd860e}.ap-ext-shopee .ap-theme--dark .ap-notifications__item-icon{width:60px;height:60px;flex-shrink:0;margin:0 4px;border-radius:6px;overflow:hidden}.ap-ext-shopee .ap-theme--dark .ap-notifications__item-icon img{width:100%;height:100%}.ap-ext-shopee .ap-theme--dark .ap-notifications__item-info{margin:0 6px}.ap-ext-shopee .ap-theme--dark .ap-notifications__item-title{font-size:14px;font-weight:600;color:#ccc;line-height:1.5}.ap-ext-shopee .ap-theme--dark .ap-notifications__item-title.text-orange{color:#fd860e}.ap-ext-shopee .ap-theme--dark .ap-notifications__item-title.text-green{color:#04c446}.ap-ext-shopee .ap-theme--dark .ap-notifications__item-desc{font-size:12px;font-weight:400;color:#ccc;display:-webkit-box;max-height:36px;overflow:hidden;line-height:18px;transition:all .2s ease-in-out;-webkit-line-clamp:2;-webkit-box-orient:vertical}.ap-ext-shopee .ap-theme--light .ap-notifications__list{display:flex;display:-ms-flexbox;flex-direction:column;-ms-flex-direction:column;flex-direction:column}.ap-ext-shopee .ap-theme--light .ap-notifications__item{margin-bottom:10px}.ap-ext-shopee .ap-theme--light .ap-notifications__item-link{background-color:#fff;border-radius:6px;padding:4px 0;border:solid 1px #eee;display:flex;display:-ms-flexbox;align-items:center;-ms-flex-align:center}.ap-ext-shopee .ap-theme--light .ap-notifications__item-link:hover{border-color:#fd860e}.ap-ext-shopee .ap-theme--light .ap-notifications__item-icon{width:60px;height:60px;flex-shrink:0;margin:0 4px;border-radius:6px;overflow:hidden}.ap-ext-shopee .ap-theme--light .ap-notifications__item-icon img{width:100%;height:100%}.ap-ext-shopee .ap-theme--light .ap-notifications__item-info{margin:0 6px}.ap-ext-shopee .ap-theme--light .ap-notifications__item-title{font-size:14px;font-weight:600;color:#777;line-height:1.5}.ap-ext-shopee .ap-theme--light .ap-notifications__item-title.text-orange{color:#fd860e}.ap-ext-shopee .ap-theme--light .ap-notifications__item-title.text-green{color:#04c446}.ap-ext-shopee .ap-theme--light .ap-notifications__item-desc{font-size:12px;font-weight:400;color:#777;display:-webkit-box;max-height:36px;overflow:hidden;line-height:18px;transition:all .2s ease-in-out;-webkit-line-clamp:2;-webkit-box-orient:vertical}.ap-ext-shopee .ap-toolbar-tab-Bulletin .ap-toolbar-tab-tab__inner .ap-notification-cover {width: 60px;height: 60px;background-position: center center;background-repeat: no-repeat;}.ap-ext-shopee .ap-theme--dark .ap-toolbar-tab-Bulletin[data-read="true"] .ap-toolbar-tab-tab__inner .ap-notification-cover{background-image: url("https://www.aliprice.com/static/img/qipao-theme/tabbar-icon-message-dark.png ");}.ap-ext-shopee .ap-theme--dark .ap-toolbar-tab-Bulletin[data-read="false"] .ap-toolbar-tab-tab__inner .ap-notification-cover{background-image: url("https://www.aliprice.com/static/img/qipao-theme/tabbar-icon-message-dark.png");}.ap-ext-shopee .ap-theme--light .ap-toolbar-tab-Bulletin[data-read="true"] .ap-toolbar-tab-tab__inner .ap-notification-cover{background-image: url("https://www.aliprice.com/static/img/qipao-theme/tabbar-icon-message-light.png");}.ap-ext-shopee .ap-theme--light .ap-toolbar-tab-Bulletin[data-read="false"] .ap-toolbar-tab-tab__inner .ap-notification-cover{background-image: url("https://www.aliprice.com/static/img/qipao-theme/tabbar-icon-message-light.png");}.ap-ext-shopee .ap-sbi-btn-search-wrapper {z-index: 2147483647 !important;width: 33px;height: 33px;line-height: 30px;}/*Unordered users hide cross-border direct purchases 20250120 by jjlin*/.ap-ext-shopee .ap-toolbar-tab-ds1688, .ap-ext-shopee .ap-aliprice-agent-btns {display: none !important;}</style>
+         </div>
       </div>
-
-      <div class="flex flex-col gap-4 items-center">
-        <div class="flex items-center gap-4">
-          <button 
-            class="px-3 py-1 bg-yellow-600 hover:bg-yellow-500 text-white rounded-full transition-colors"
-            onclick="decreaseBet()"
-          >
-            -
-          </button>
-          <span class="text-yellow-400 font-medium">Bet: R$ <span id="bet">1</span></span>
-          <button 
-            class="px-3 py-1 bg-yellow-600 hover:bg-yellow-500 text-white rounded-full transition-colors"
-            onclick="increaseBet()"
-          >
-            +
-          </button>
-        </div>
-
-        <button
-          id="spin-button"
-          class="flex items-center gap-2 px-6 py-3 rounded-full text-white font-bold transition-colors bg-yellow-600 hover:bg-yellow-500"
-          onclick="spin()"
-        >
-          <i data-lucide="refresh-cw"></i>
-          Spin
-        </button>
-      </div>
-
-      <div class="mt-4 text-yellow-200 text-sm">
-        <p>🎎 🏮 🍜 🧧 🧨 = 0.5x | 💰 👑 = 5x</p>
-        <p>🦁 = Wild (matches symbol value)</p>
-        <p>Horizontal and diagonal sequences of 3 count!</p>
-      </div>
-    </div>
-  </div>
-
-  <script>
-    const COMMON_SYMBOLS = ['🎎', '🏮', '🍜', '🧧', '🧨'];
-    const RARE_SYMBOLS = ['💰', '👑'];
-    const WILD_SYMBOL = '🦁';
-    const ALL_SYMBOLS = [...COMMON_SYMBOLS, ...RARE_SYMBOLS];
-    const ROWS = 3;
-    const COLS = 3;
-
-    let balance = 100;
-    let bet = 1;
-    let grid = Array(ROWS).fill(null).map(() =>
-      Array(COLS).fill(null).map(() => ALL_SYMBOLS[Math.floor(Math.random() * ALL_SYMBOLS.length)])
-    );
-    let spinning = false;
-
-    function updateUI() {
-      document.getElementById('balance').textContent = balance.toFixed(2);
-      document.getElementById('bet').textContent = bet;
-      
-      const gridElement = document.getElementById('grid');
-      gridElement.innerHTML = '';
-      
-      grid.forEach((row, i) => {
-        row.forEach((symbol, j) => {
-          const cell = document.createElement('div');
-          cell.className = `aspect-square bg-yellow-100 rounded-lg flex items-center justify-center text-4xl ${spinning ? 'animate-bounce' : ''}`;
-          cell.textContent = symbol;
-          gridElement.appendChild(cell);
-        });
-      });
-
-      const spinButton = document.getElementById('spin-button');
-      if (spinning || balance < bet) {
-        spinButton.classList.remove('bg-yellow-600', 'hover:bg-yellow-500');
-        spinButton.classList.add('bg-gray-600', 'cursor-not-allowed');
-        spinButton.disabled = true;
-      } else {
-        spinButton.classList.remove('bg-gray-600', 'cursor-not-allowed');
-        spinButton.classList.add('bg-yellow-600', 'hover:bg-yellow-500');
-        spinButton.disabled = false;
-      }
-    }
-
-    function getRandomSymbol() {
-      const rand = Math.random();
-      if (rand < 0.02) return WILD_SYMBOL;
-      if (rand < 0.15) return RARE_SYMBOLS[Math.floor(Math.random() * RARE_SYMBOLS.length)];
-      return COMMON_SYMBOLS[Math.floor(Math.random() * COMMON_SYMBOLS.length)];
-    }
-
-    function checkLine(line) {
-      const wildCount = line.filter(s => s === WILD_SYMBOL).length;
-      const nonWildSymbols = line.filter(s => s !== WILD_SYMBOL);
-      
-      if (nonWildSymbols.length === 0) return { valid: true, symbol: WILD_SYMBOL };
-      
-      const mainSymbol = nonWildSymbols[0];
-      const isValid = nonWildSymbols.every(s => s === mainSymbol);
-      
-      const isCommon = COMMON_SYMBOLS.includes(mainSymbol);
-      const hasOnlyCommon = nonWildSymbols.every(s => COMMON_SYMBOLS.includes(s));
-      const hasOnlyRare = nonWildSymbols.every(s => RARE_SYMBOLS.includes(s));
-      
-      if (!hasOnlyCommon && !hasOnlyRare) return { valid: false };
-      
-      return {
-        valid: isValid && line.length === 3,
-        symbol: mainSymbol,
-        wildBonus: wildCount > 0,
-        isCommon: isCommon
-      };
-    }
-
-    function getMultiplier(symbol, hasWild) {
-      const baseMultiplier = COMMON_SYMBOLS.includes(symbol) ? 0.1666666666666667 : 1.666666666666667;
-      return baseMultiplier * 3;
-    }
-
-    function checkAllSameSymbol() {
-      const firstSymbol = grid[0][0];
-      return grid.every(row => row.every(symbol => symbol === firstSymbol));
-    }
-
-    function showWin(amount) {
-      const winMessage = document.getElementById('win-message');
-      winMessage.querySelector('div').textContent = `WIN! R$ ${amount.toFixed(2)}`;
-      winMessage.classList.remove('hidden');
-      setTimeout(() => winMessage.classList.add('hidden'), 2000);
-    }
-
-    function showSpecialEvent(message) {
-      const specialEvent = document.getElementById('special-event');
-      specialEvent.textContent = message;
-      specialEvent.classList.remove('hidden');
-      setTimeout(() => specialEvent.classList.add('hidden'), 2000);
-    }
-
-    function checkWin() {
-      let winAmount = 0;
-
-      if (Math.random() < 0.1 && checkAllSameSymbol()) {
-        showSpecialEvent("SUPER JACKPOT! All symbols transformed to Wild!");
-        grid = grid.map(row => row.map(() => WILD_SYMBOL));
-        winAmount = bet * 10;
-      } else {
-        const diagonal1 = [grid[0][0], grid[1][1], grid[2][2]];
-        const diagonal2 = [grid[0][2], grid[1][1], grid[2][0]];
-        
-        const horizontalLines = grid.map(row => [...row]);
-        
-        [...horizontalLines, diagonal1, diagonal2].forEach(line => {
-          const result = checkLine(line);
-          if (result.valid) {
-            winAmount += bet * getMultiplier(result.symbol, result.wildBonus);
-          }
-        });
-      }
-
-      if (winAmount > 0) {
-        balance += winAmount;
-        showWin(winAmount);
-      }
-      
-      updateUI();
-    }
-
-    function spin() {
-      if (balance < bet || spinning) return;
-
-      spinning = true;
-      balance -= bet;
-      updateUI();
-
-      let spins = 0;
-      const maxSpins = 10;
-      const interval = setInterval(() => {
-        grid = Array(ROWS).fill(null).map(() =>
-          Array(COLS).fill(null).map(() => getRandomSymbol())
-        );
-        updateUI();
-        spins++;
-        
-        if (spins >= maxSpins) {
-          clearInterval(interval);
-          spinning = false;
-          checkWin();
-        }
-      }, 100);
-    }
-
-    function increaseBet() {
-      if (!spinning && bet < 100) {
-        bet = Math.min(100, bet + 1);
-        updateUI();
-      }
-    }
-
-    function decreaseBet() {
-      if (!spinning && bet > 1) {
-        bet = Math.max(1, bet - 1);
-        updateUI();
-      }
-    }
-
-    // Initialize Lucide icons
-    lucide.createIcons();
-
-    // Initial UI update
-    updateUI();
-  </script>
-</body>
+      <div id="ookdjilphngeeeghgngjabigmpepanpl"></div>
+      <div id="extension-ebdbc"></div>
+   </body>
 </html>
